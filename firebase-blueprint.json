@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Workspace": {
+      "title": "Workspace",
+      "description": "A workspace for a website owner.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "apiKey": { "type": "string" },
+        "widgetConfig": {
+          "type": "object",
+          "properties": {
+            "primaryColor": { "type": "string" },
+            "welcomeMessage": { "type": "string" },
+            "logoUrl": { "type": "string" }
+          }
+        },
+        "aiEnabled": { "type": "boolean" },
+        "plan": { "type": "string", "enum": ["free", "pro", "business"] },
+        "stripeCustomerId": { "type": "string" },
+        "stripeSubscriptionId": { "type": "string" }
+      },
+      "required": ["id", "name", "ownerId", "apiKey"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "A chat conversation between a customer and a workspace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string" },
+        "channel": { "type": "string", "enum": ["livechat", "whatsapp", "telegram", "messenger"] },
+        "status": { "type": "string", "enum": ["open", "closed", "unread"] },
+        "lastMessage": { "type": "string" },
+        "lastMessageAt": { "type": "string", "format": "date-time" },
+        "assignedTo": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "workspaceId", "channel", "status"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A single message in a conversation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderType": { "type": "string", "enum": ["customer", "agent", "ai"] },
+        "text": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "fileType": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "isInternal": { "type": "boolean" }
+      },
+      "required": ["id", "conversationId", "senderType", "text", "createdAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A platform user (owner, admin, agent).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "workspaces": { "type": "array", "items": { "type": "string" } },
+        "role": { "type": "string", "enum": ["owner", "admin", "agent"] },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email"]
+    },
+    "TeamMember": {
+      "title": "Team Member",
+      "description": "A member of a specific workspace.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "agent"] },
+        "status": { "type": "string", "enum": ["active", "invited", "inactive"] },
+        "invitedAt": { "type": "string", "format": "date-time" },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email", "role", "status"]
+    }
+  },
+  "firestore": {
+    "/workspaces/{workspaceId}": {
+      "schema": "Workspace",
+      "description": "Workspace settings and configuration."
+    },
+    "/workspaces/{workspaceId}/members/{userId}": {
+      "schema": "TeamMember",
+      "description": "Members of a workspace."
+    },
+    "/workspaces/{workspaceId}/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Conversations within a workspace."
+    },
+    "/workspaces/{workspaceId}/conversations/{conversationId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages within a conversation."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles."
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "AnyChat SaaS",
+  "description": "A multi-channel live chat and customer communication platform with AI auto-reply and Stripe billing.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"]
+}
